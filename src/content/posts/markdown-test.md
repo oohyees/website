@@ -1,20 +1,14 @@
 ---
 author: oohyees
-pubDatetime: 2026-05-27T17:00:00Z
+pubDatetime: 2026-05-27T10:00:00Z
 title: Markdown 渲染能力测试
 slug: markdown-rendering-test
 featured: false
 draft: false
 tags:
   - 测试
-description: "测试博客对各种复杂 Markdown 和 MDX 语法的渲染效果。"
+description: "测试博客对各种复杂 Markdown 语法的渲染效果。"
 ---
-
-import ResponsiveTable from '@/components/ResponsiveTable.astro';
-
-## 目录
-
-本文测试 AstroPaper 对各种 Markdown 语法的渲染能力。
 
 ## 代码块
 
@@ -53,9 +47,8 @@ async function getPosts(): Promise<Post[]> {
 }
 ```
 
-## 表格（响应式）
+## 表格
 
-<ResponsiveTable>
 | 方案 | 托管平台 | 成本 | 适合人群 |
 |------|---------|------|---------|
 | Vercel + Astro | Vercel | 免费 | 开发者 |
@@ -63,7 +56,6 @@ async function getPosts(): Promise<Post[]> {
 | WordPress | 虚拟主机 | ~¥200/年 | 非技术用户 |
 | Notion + Super | Super | ~$12/月 | 效率工具用户 |
 | Hashnode | Hashnode | 免费 | 不想折腾的人 |
-</ResponsiveTable>
 
 ## 引用和嵌套
 
@@ -99,10 +91,6 @@ async function getPosts(): Promise<Post[]> {
 - [ ] 绑定自定义域名
 - [ ] 写够 10 篇文章
 
-## 分割线
-
----
-
 ## 内联样式
 
 - **粗体文字**
@@ -110,7 +98,6 @@ async function getPosts(): Promise<Post[]> {
 - ~~删除线~~
 - `行内代码`
 - [链接文字](https://github.com/oohyees)
-- H~2~O 下标 和 x^2^ 上标（如不支持会显示原样）
 
 ## 图片
 
@@ -118,6 +105,6 @@ async function getPosts(): Promise<Post[]> {
 
 *图片来源：Unsplash*
 
-## 总结
+---
 
-AstroPaper 的 Markdown 渲染能力覆盖了日常写作的绝大部分需求。代码 Diff 和 Highlight 是 Shiki 的独有功能，对技术博客非常实用。
+以上涵盖了日常技术写作的绝大部分需求。代码 Diff 和 Highlight 是 Shiki 的独有功能，对技术博客非常实用。
