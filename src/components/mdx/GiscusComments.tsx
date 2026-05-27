@@ -15,8 +15,8 @@ export default function GiscusComments() {
     script.crossOrigin = "anonymous";
     script.setAttribute("data-repo", "oohyees/website");
     script.setAttribute("data-repo-id", "R_kgDOSpeQ3Q");
-    script.setAttribute("data-category", "General");
-    script.setAttribute("data-category-id", "DIC_kwDOSpeQ3c4AAAAF");
+    script.setAttribute("data-category", "Announcements");
+    script.setAttribute("data-category-id", "DIC_kwDOSpeQ3c4C9-jt");
     script.setAttribute("data-mapping", "pathname");
     script.setAttribute("data-strict", "0");
     script.setAttribute("data-reactions-enabled", "1");
