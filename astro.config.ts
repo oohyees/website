@@ -22,6 +22,8 @@ import {
   transformerNotationWordHighlight,
 } from "@shikijs/transformers";
 import { transformerFileName } from "./src/utils/transformers/fileName";
+import { remarkDirectiveHandler } from "./src/utils/remarkDirectiveHandler";
+import { remarkReadingTime } from "./src/utils/remarkReadingTime";
 import config from "./astro-paper.config";
 
 export default defineConfig({
@@ -29,7 +31,7 @@ export default defineConfig({
   integrations: [
     react(),
     mdx({
-      remarkPlugins: [remarkToc, remarkMath, remarkDirective, [remarkCollapse, { test: "Table of contents" }]],
+      remarkPlugins: [remarkReadingTime, remarkToc, remarkMath, remarkDirective, remarkDirectiveHandler, [remarkCollapse, { test: "Table of contents" }]],
       rehypePlugins: [
         rehypeSlug,
         [rehypeAutolinkHeadings, { behavior: "append" }],
@@ -50,7 +52,7 @@ export default defineConfig({
     },
   },
   markdown: {
-    remarkPlugins: [remarkToc, remarkMath, remarkDirective, [remarkCollapse, { test: "Table of contents" }]],
+    remarkPlugins: [remarkReadingTime, remarkToc, remarkMath, remarkDirective, remarkDirectiveHandler, [remarkCollapse, { test: "Table of contents" }]],
     rehypePlugins: [
       rehypeSlug,
       [rehypeAutolinkHeadings, { behavior: "append" }],

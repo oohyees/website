@@ -119,6 +119,16 @@ const ogImage = ogImageUrl
 
     <div class="my-2 flex items-center gap-2">
       <Datetime {pubDatetime} {modDatetime} {timezone} size="lg" />
+      {
+        post.data.minutesRead && (
+          <>
+            <span aria-hidden="true" class="text-muted-foreground">|</span>
+            <span class="text-sm text-muted-foreground">
+              {post.data.minutesRead} 分钟阅读
+            </span>
+          </>
+        )
+      }
       <span
         aria-hidden="true"
         class:list={[
