@@ -6,11 +6,16 @@ import {
 } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
 import mdx from "@astrojs/mdx";
+import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 import remarkToc from "remark-toc";
 import remarkCollapse from "remark-collapse";
 import remarkMath from "remark-math";
+import remarkDirective from "remark-directive";
 import rehypeKatex from "rehype-katex";
+import rehypeSlug from "rehype-slug";
+import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import rehypeExternalLinks from "rehype-external-links";
 import {
   transformerNotationDiff,
   transformerNotationHighlight,
@@ -19,12 +24,21 @@ import {
 import { transformerFileName } from "./src/utils/transformers/fileName";
 import config from "./astro-paper.config";
 
+const commonRemarkPlugins = [remarkToc, remarkMath, remarkDirective, [remarkCollapse, { test: "Table of contents" }]];
+const commonRehypePlugins = [
+  rehypeSlug,
+  [rehypeAutolinkHeadings, { behavior: "append" }],
+  [rehypeExternalLinks, { target: "_blank", rel: ["noopener", "noreferrer"] }],
+  rehypeKatex,
+];
+
 export default defineConfig({
   site: config.site.url,
   integrations: [
+    react(),
     mdx({
-      remarkPlugins: [remarkMath],
-      rehypePlugins: [rehypeKatex],
+      remarkPlugins: commonRemarkPlugins,
+      rehypePlugins: commonRehypePlugins,
     }),
     sitemap({
       filter: page =>
@@ -39,8 +53,8 @@ export default defineConfig({
     },
   },
   markdown: {
-    remarkPlugins: [remarkToc, remarkMath, [remarkCollapse, { test: "Table of contents" }]],
-    rehypePlugins: [rehypeKatex],
+    remarkPlugins: commonRemarkPlugins,
+    rehypePlugins: commonRehypePlugins,
     shikiConfig: {
       themes: { light: "min-light", dark: "night-owl" },
       defaultColor: false,

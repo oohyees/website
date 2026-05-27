@@ -1,0 +1,319 @@
+---
+author: oohyees
+pubDatetime: 2026-05-27T06:00:00Z
+modDatetime: 2026-05-28T00:00:00Z
+title: Astro 博客能力边界探索
+slug: capability-demo
+featured: true
+draft: false
+tags:
+  - Astro
+  - MDX
+  - 演示
+description: "全方位展示 Astro 博客的所有能力：自定义组件、数学公式、代码增强、React 交互组件、评论区等。"
+---
+
+import Callout from '@/components/mdx/Callout.astro';
+import Steps from '@/components/mdx/Steps.astro';
+import Step from '@/components/mdx/Step.astro';
+import Collapsible from '@/components/mdx/Collapsible.astro';
+import CodeCompare from '@/components/mdx/CodeCompare.astro';
+import ResponsiveTable from '@/components/ResponsiveTable.astro';
+import Tabs from '@/components/mdx/Tabs.tsx';
+import Counter from '@/components/mdx/Counter.tsx';
+
+本文是一篇能力边界演示，尽可能展示 Astro 博客生态中的全部可用功能。
+
+## Table of contents
+
+## 1. Callout 提示块
+
+五种内置样式：
+
+<Callout type="info" title="信息提示">
+这是一个信息类型的提示块。适合放一些补充说明、背景知识等内容。
+</Callout>
+
+<Callout type="tip" title="小技巧">
+这里放一个实用技巧。比如：你可以用 `pnpm dev` 启动开发服务器，修改内容会自动热更新。
+</Callout>
+
+<Callout type="warning" title="注意事项">
+此类操作需要谨慎。构建前请确认所有文章 `draft: false` 已设置正确。
+</Callout>
+
+<Callout type="success" title="部署完成">
+部署成功！你的网站已上线，可以通过 Vercel 域名访问。
+</Callout>
+
+<Callout type="error">
+Vercel 构建失败：缺少 `zh` 语言文件。请在 `src/i18n/lang/` 下添加对应的翻译文件。
+</Callout>
+
+## 2. React 交互组件
+
+### Tabs 标签页
+
+<Tabs
+  client:only="react"
+  tabs={[
+    { 
+      label: "TypeScript",
+      content: `<pre><code>interface User {
+  id: number
+  name: string
+  email: string
+  role: "admin" | "user"
+}
+
+const user: User = {
+  id: 1,
+  name: "oohyees",
+  email: "hi@example.com",
+  role: "admin",
+}</code></pre>`
+    },
+    { 
+      label: "Python",
+      content: `<pre><code>from dataclasses import dataclass
+from typing import Literal
+
+@dataclass
+class User:
+    id: int
+    name: str
+    email: str
+    role: Literal["admin", "user"]
+
+user = User(
+    id=1,
+    name="oohyees",
+    email="hi@example.com",
+    role="admin"
+)</code></pre>`
+    },
+    { 
+      label: "Go",
+      content: `<pre><code>type Role string
+
+const (
+    RoleAdmin Role = "admin"
+    RoleUser  Role = "user"
+)
+
+type User struct {
+    ID    int
+    Name  string
+    Email string
+    Role  Role
+}
+
+user := User{
+    ID:    1,
+    Name:  "oohyees",
+    Email: "hi@example.com",
+    Role:  RoleAdmin,
+}</code></pre>`
+    },
+  ]}
+/>
+
+### Counter 计数器
+
+带 `client:only` 的 React 组件，支持状态交互：
+
+<div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+  <Counter client:only="react" initial={0} label="点赞数" />
+  <Counter client:only="react" initial={42} label="访问量" />
+</div>
+
+<Callout type="info" title="关于 React 组件">
+`client:load` 和 `client:only` 指令让组件在浏览器端激活。Astro 支持 React、Vue、Svelte、Solid、Preact 等所有主流 UI 框架，同一个项目中可以混用。`client:only` 跳过服务端渲染，适合纯交互组件。
+</Callout>
+
+## 3. 步骤引导
+
+<Steps>
+  <Step>
+    **安装 Node.js 和 pnpm**。确保 `node -v` 和 `pnpm -v` 能正确输出版本号。
+  </Step>
+  <Step>
+    **克隆模板**。从 GitHub 选择一个 Astro 博客模板，Fork 到自己的账号，然后克隆到本地。
+  </Step>
+  <Step>
+    **安装依赖**。在项目目录运行 `pnpm install`。
+  </Step>
+  <Step>
+    **本地预览**。运行 `pnpm dev`，浏览器打开 `http://localhost:4321/`。
+  </Step>
+  <Step>
+    **部署上线**。把代码推到 GitHub，用 Vercel 一键导入，每次 push 自动部署。
+  </Step>
+</Steps>
+
+## 4. 可折叠内容
+
+<Collapsible summary="点击展开：更多关于 Astro 的信息">
+
+Astro 是一个现代静态网站生成器，核心特色是：
+
+- **Islands Architecture**：只有必要的交互组件才发送 JS 到客户端
+- **零 JS 默认**：纯内容页面完全不加载 JavaScript
+- **多框架支持**：同时使用 React、Vue、Svelte 组件
+- **Content Collections**：内置类型安全的内容管理系统
+- **View Transitions**：原生 MPA 过渡动画
+
+</Collapsible>
+
+## 5. 响应式表格
+
+<ResponsiveTable variant="striped">
+| 特性 | 普通 Markdown | MDX | Astro 组件 |
+|------|:----------:|:---:|:---------:|
+| 基础排版 | ✅ | ✅ | — |
+| 代码高亮 | ✅ | ✅ | — |
+| LaTeX 公式 | ✅ | ✅ | — |
+| 嵌入组件 | ❌ | ✅ | — |
+| 交互功能 | ❌ | ✅ | ✅ |
+</ResponsiveTable>
+
+<ResponsiveTable variant="striped-minimal">
+| 框架 | Astro 支持 | 需要 adapter |
+|------|:--------:|:----------:|
+| React | ✅ | 否 |
+| Vue | ✅ | 否 |
+| Svelte | ✅ | 否 |
+| Solid | ✅ | 否 |
+| Preact | ✅ | 否 |
+</ResponsiveTable>
+
+## 6. 代码增强
+
+### 文件名标注
+
+```ts file="src/utils/slugify.ts"
+export function slugifyStr(str: string): string {
+  return str
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^\w-]+/g, "");
+}
+```
+
+### 代码 Diff
+
+```ts diff
+function greet(name: string): string {
+- return "Hello, " + name + "!";
++ return `Hello, ${name}!`;
+}
+```
+
+### 行高亮
+
+```ts "useState"
+import { useState } from "react";
+
+function Counter() {
+  const [count, setCount] = useState(0);
+  return (
+    <button onClick={() => setCount(count + 1)}>
+      Clicked {count} times
+    </button>
+  );
+}
+```
+
+## 7. 代码对比
+
+<CodeCompare titleA="JS (旧版)" titleB="TS (新版)">
+  <Fragment slot="a">
+
+```js
+function calculateTotal(items) {
+  let total = 0;
+  for (let i = 0; i < items.length; i++) {
+    total += items[i].price;
+  }
+  return total;
+}
+```
+
+  </Fragment>
+  <Fragment slot="b">
+
+```ts
+function calculateTotal(items: Item[]): number {
+  return items.reduce((total, item) => total + item.price, 0);
+}
+```
+
+  </Fragment>
+</CodeCompare>
+
+## 8. 数学公式
+
+### 行内公式
+
+在物理学中，动能公式 $E_k = \frac{1}{2}mv^2$ 是经典力学的基础。信息论中的熵定义为 $H = -\sum_{i} p_i \log_2 p_i$。
+
+### 块级公式
+
+正态分布概率密度函数：
+
+$$
+f(x) = \frac{1}{\sigma\sqrt{2\pi}} e^{-\frac{(x-\mu)^2}{2\sigma^2}}
+$$
+
+### 复杂公式
+
+矩阵行列式展开（$3 \times 3$）：
+
+$$
+\det\begin{pmatrix}
+a & b & c \\
+d & e & f \\
+g & h & i
+\end{pmatrix}
+= aei + bfg + cdh - ceg - bdi - afh
+$$
+
+## 9. 外部链接自动处理
+
+以下是几个外部链接，它们由 `rehype-external-links` 自动添加 `target="_blank"` 和 `rel="noopener noreferrer"`：
+
+- [Astro 官方文档](https://docs.astro.build/)
+- [Vercel 平台](https://vercel.com/)
+- [GitHub](https://github.com/oohyees/website)
+
+内部链接（如 [回到首页](/)）保持不变。
+
+## 10. 混合使用
+
+<Callout type="tip">
+
+### 你知道吗？
+
+你可以把 **LaTeX 公式**、**代码块** 甚至 **其他元素** 嵌套在 Callout 里：
+
+```ts
+const magic: number = Math.E ** (Math.PI * Math.i) + 1; // ≈ 0
+```
+
+和数学公式：欧拉恒等式 $e^{i\pi} + 1 = 0$
+
+</Callout>
+
+---
+
+以上覆盖了 Astro 博客的主要能力边界。核心能力栈总结：
+
+| 类别 | 已实现功能 |
+|------|----------|
+| **Astro 组件** | Callout (5 种)、Steps/Step、Collapsible、CodeCompare、ResponsiveTable (3 种) |
+| **React 交互** | Tabs（标签页切换）、Counter（计数器），可扩展至任意 React 组件 |
+| **数学公式** | LaTeX 行内/块级，KaTeX 渲染 |
+| **代码增强** | Shiki 双主题高亮、Diff、Highlight、文件名标注 |
+| **链接处理** | 外链自动 target="_blank"、标题锚点自动生成 |
+| **自动目录** | `## Table of contents` 自动折叠目录 |
+| **评论区** | Giscus（需安装 GitHub App） |

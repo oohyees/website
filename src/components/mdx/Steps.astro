@@ -1,0 +1,10 @@
+<ol class="my-6 space-y-4 [counter-reset:step]">
+  {Astro.props.children}
+</ol>
+
+<script>
+  // Number steps dynamically
+  document.querySelectorAll('.step-item').forEach((el, i) => {
+    (el as HTMLElement).style.setProperty('--step-num', String(i + 1));
+  });
+</script>
