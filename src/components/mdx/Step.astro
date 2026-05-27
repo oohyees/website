@@ -1,23 +1,22 @@
-<li
-  class="step-item pl-12 relative"
-  style="counter-increment: step;"
->
-  <span
-    class="absolute left-0 top-0 flex items-center justify-center size-8 rounded-full bg-accent text-accent-foreground text-sm font-bold"
-  >
-    <span class="step-num"></span>
-  </span>
+---
+// Step.astro — each instance self-numbers via a data attr + global CSS
+---
+
+<li class="step-li pl-12 relative">
+  <span class="step-num absolute left-0 top-0 flex items-center justify-center size-8 rounded-full bg-accent text-accent-foreground text-sm font-bold"></span>
   <div class="text-sm">
     <slot />
   </div>
 </li>
 
-<script>
-  // Self-numbering
-  const el = document.currentScript?.previousElementSibling;
-  if (el) {
-    const num = el.querySelector('.step-num');
-    const idx = [...el.parentElement!.children].indexOf(el) + 1;
-    if (num) num.textContent = String(idx);
+<style is:global>
+  ol {
+    counter-reset: step-num 0;
   }
-</script>
+  .step-li {
+    counter-increment: step-num 1;
+  }
+  .step-num::after {
+    content: counter(step-num);
+  }
+</style>
