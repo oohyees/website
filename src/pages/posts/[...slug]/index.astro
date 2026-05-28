@@ -68,47 +68,70 @@ const ogImage = ogImageUrl ? new URL(ogImageUrl, Astro.url.origin).href : undefi
 
   <main
     id="main-content"
-    class:list={["app-layout", { "mt-8": !config.features.showBackButton }]}
+    class="post-layout"
     data-pagefind-body
   >
-    <h1 class="text-2xl font-bold sm:text-3xl">{title}</h1>
+    <!-- Post header -->
+    <h1 class="text-2xl font-bold sm:text-3xl post-content">{title}</h1>
 
-    <div class="mt-2 mb-6 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
+    <div class="mt-2 mb-6 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground post-content">
       <Datetime {pubDatetime} {modDatetime} {timezone} size="sm" />
-      {post.data.minutesRead && (
-        <span>{post.data.minutesRead} 分钟阅读</span>
-      )}
+      {post.data.minutesRead && <span>{post.data.minutesRead} 分钟阅读</span>}
       <EditPost {hideEditPost} {post} />
     </div>
 
-    <!-- Auto-generated TOC -->
-    <nav id="toc" class="mb-8 rounded-lg border border-border bg-muted/20 px-5 py-4" aria-label="目录">
-      <h2 class="text-sm font-semibold mb-2">Table of contents</h2>
-      <ul id="toc-list" class="text-sm space-y-1"></ul>
-    </nav>
+    <!-- Mobile TOC: collapsible, above content -->
+    <details id="toc-mobile" class="mb-6 lg:hidden post-content">
+      <summary class="text-sm font-semibold cursor-pointer select-none py-1 text-muted-foreground hover:text-foreground">
+        Table of contents
+      </summary>
+      <nav class="mt-2 rounded-lg border border-border bg-muted/20 px-4 py-3">
+        <ul id="toc-list-mobile" class="text-sm space-y-1"></ul>
+      </nav>
+    </details>
 
-    <article
-      id="article"
-      class="app-prose max-w-app"
-    >
-      <Content />
-    </article>
+    <!-- Two-column: content + sidebar TOC -->
+    <div class="flex gap-10">
+      <!-- Left: article content -->
+      <article
+        id="article"
+        class="app-prose post-content min-w-0 flex-1"
+      >
+        <Content />
+      </article>
 
-    <hr class="my-8 border-border" />
+      <!-- Desktop TOC: sticky right sidebar -->
+      <aside
+        id="toc-sidebar"
+        class="toc-sidebar hidden lg:block"
+        aria-label="Table of contents"
+      >
+        <h2 class="text-sm font-semibold mb-3 text-foreground">Table of contents</h2>
+        <nav>
+          <ul id="toc-list" class="text-sm space-y-1.5 border-l-2 border-border pl-3"></ul>
+        </nav>
+      </aside>
+    </div>
+
+    <hr class="my-8 border-border post-content" />
 
     <BackToTopButton />
 
-    <ul class="mb-6 flex flex-wrap gap-3">
+    <ul class="mb-6 flex flex-wrap gap-3 post-content">
       {tags.map(tag => <Tag tag={slugifyStr(tag)} tagName={tag} size="sm" />)}
     </ul>
 
-    <ShareLinks />
+    <div class="post-content">
+      <ShareLinks />
+    </div>
 
-    <hr class="my-8 border-border" />
+    <hr class="my-8 border-border post-content" />
 
-    <AdjacentPostNav {prevPost} {nextPost} />
+    <div class="post-content">
+      <AdjacentPostNav {prevPost} {nextPost} />
+    </div>
 
-    <div class="mt-8" id="comments-section">
+    <div class="mt-8 post-content" id="comments-section">
       <h2 class="text-lg font-semibold mb-4">评论</h2>
       <div class="giscus"></div>
     </div>
@@ -146,39 +169,54 @@ const ogImage = ogImageUrl ? new URL(ogImageUrl, Astro.url.origin).href : undefi
     });
   })();
 
-  // ---- TOC generator ----
+  // ---- TOC generator (shared by desktop sidebar and mobile collapsible) ----
   (function () {
-    const toc = document.getElementById("toc");
-    const tocList = document.getElementById("toc-list");
-    if (!toc || !tocList) return;
-
     const article = document.querySelector("#article");
     if (!article) return;
 
     const headings = article.querySelectorAll("h2, h3");
-    if (headings.length === 0) {
-      toc.style.display = "none";
+    if (headings.length < 2) {
+      // Hide TOC if fewer than 2 headings
+      const sidebar = document.getElementById("toc-sidebar");
+      const mobile = document.getElementById("toc-mobile");
+      if (sidebar) sidebar.style.display = "none";
+      if (mobile) mobile.style.display = "none";
       return;
     }
 
-    headings.forEach((h, i) => {
-      const id = h.id || `heading-${i}`;
-      h.id = id;
-
-      const li = document.createElement("li");
-      li.style.paddingLeft = h.tagName === "H3" ? "1.25rem" : "0";
-
-      const a = document.createElement("a");
-      a.href = `#${id}`;
-      a.textContent = h.textContent || "";
-      a.className = "text-muted-foreground hover:text-accent transition-colors";
-      if (h.tagName === "H3") {
-        a.style.fontSize = "0.8125rem";
-      }
-
-      li.appendChild(a);
-      tocList.appendChild(li);
+    headings.forEach((h, idx) => {
+      if (!h.id) h.id = `heading-${idx}`;
     });
+
+    const buildToc = (listId) => {
+      const list = document.getElementById(listId);
+      if (!list) return;
+
+      headings.forEach((h) => {
+        const li = document.createElement("li");
+        const isH3 = h.tagName === "H3";
+        li.style.paddingLeft = isH3 ? "1rem" : "0";
+
+        const a = document.createElement("a");
+        a.href = `#${h.id}`;
+        a.textContent = h.textContent || "";
+        a.className = `hover:text-accent transition-colors ${isH3 ? "text-xs text-muted-foreground" : "text-sm text-muted-foreground font-medium"}`;
+        a.addEventListener("click", (e) => {
+          e.preventDefault();
+          const target = document.getElementById(h.id);
+          if (target) {
+            target.scrollIntoView({ behavior: "smooth" });
+            history.pushState(null, "", `#${h.id}`);
+          }
+        });
+
+        li.appendChild(a);
+        list.appendChild(li);
+      });
+    };
+
+    buildToc("toc-list");
+    buildToc("toc-list-mobile");
   })();
 
   // ---- Copy code buttons ----

@@ -28,10 +28,32 @@
   @apply max-w-app mx-auto w-full px-5;
 }
 
+/* Wider layout for post pages with sidebar TOC: content ~720px + TOC ~220px + gap */
+@utility post-layout {
+  @apply mx-auto w-full px-5;
+  max-width: 1020px;
+}
+
+@utility post-content {
+  max-width: 720px;
+}
+
 @utility active-nav {
   @apply text-accent font-medium;
 }
 
 :target {
   scroll-margin-block: 1rem;
+}
+
+/* Sticky TOC sidebar */
+@media (min-width: 1024px) {
+  .toc-sidebar {
+    position: sticky;
+    top: 96px;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+    width: 200px;
+    flex-shrink: 0;
+  }
 }
