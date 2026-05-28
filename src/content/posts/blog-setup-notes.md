@@ -6,6 +6,7 @@ slug: blog-setup-notes
 featured: false
 draft: false
 tags:
+  - tech
   - 博客
   - Astro
   - Vercel

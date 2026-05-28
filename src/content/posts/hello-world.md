@@ -6,6 +6,7 @@ slug: hello-world
 featured: true
 draft: false
 tags:
+  - daily
   - 随笔
 description: "我的第一篇博客文章。"
 ---
