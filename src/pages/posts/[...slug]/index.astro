@@ -39,7 +39,7 @@ const { post, prevPost, nextPost } = Astro.props;
 const locale = Astro.currentLocale ?? config.site.lang;
 
 const { title, description, ogImage: initOgImage, canonicalURL, pubDatetime, modDatetime, timezone, tags, hideEditPost } = post.data;
-const { Content } = await render(post);
+const { Content, remarkPluginFrontmatter } = await render(post);
 
 let ogImageUrl: string | undefined;
 if (typeof initOgImage === "string") {
@@ -52,7 +52,9 @@ if (!ogImageUrl && config.features.dynamicOgImage) {
 }
 const ogImage = ogImageUrl ? new URL(ogImageUrl, Astro.url.origin).href : undefined;
 
-const tocHeadings = post.data.headings ?? [];
+type TocHeading = { depth: number; text: string; id: string };
+
+const tocHeadings: TocHeading[] = (remarkPluginFrontmatter as any)?.headings ?? post.data.headings ?? [];
 const hasToc = tocHeadings.length >= 2;
 ---
 
