@@ -29,32 +29,39 @@ const category = Astro.params.category as Category;
 const info = CATEGORIES[category];
 
 const locale = Astro.currentLocale ?? config.site.lang;
+
+const categoryOrder: Category[] = ["research", "tech", "daily", "journal"];
+const idx = categoryOrder.indexOf(category);
+const prevCat = categoryOrder[(idx - 1 + categoryOrder.length) % categoryOrder.length];
+const nextCat = categoryOrder[(idx + 1) % categoryOrder.length];
 ---
 
 <Layout title={`${info.label} | ${config.site.title}`}>
   <Header />
 
-  <!-- Category tabs — also serves as the page heading -->
-  <div class="app-layout mt-10 mb-6">
-    <nav class="flex gap-0 overflow-x-auto border-b border-border">
-      {Object.entries(CATEGORIES).map(([slug, { label }]) => (
-        <a
-          href={getRelativeLocaleUrl(locale, `blog/${slug}`)}
-          class:list={[
-            "px-4 py-2.5 text-sm font-medium whitespace-nowrap transition-colors border-b-2 -mb-[1px]",
-            slug === category
-              ? "border-accent text-accent"
-              : "border-transparent text-muted-foreground hover:text-foreground hover:border-border",
-          ]}
-        >
-          {label}
-        </a>
-      ))}
-    </nav>
-  </div>
-
-  <!-- Post list -->
   <main id="main-content" class="app-layout pb-4">
+    <!-- Title row with prev/next category arrows -->
+    <div class="flex items-baseline gap-3 mt-10 mb-2">
+      <a
+        href={getRelativeLocaleUrl(locale, `blog/${prevCat}`)}
+        class="text-muted-foreground hover:text-accent text-lg transition-colors"
+        aria-label={CATEGORIES[prevCat].label}
+      >&larr;</a>
+      <h1 class="text-2xl font-semibold sm:text-3xl">{info.label}</h1>
+      <a
+        href={getRelativeLocaleUrl(locale, `blog/${nextCat}`)}
+        class="text-muted-foreground hover:text-accent text-lg transition-colors"
+        aria-label={CATEGORIES[nextCat].label}
+      >&rarr;</a>
+    </div>
+
+    <!-- Post count + archives link -->
+    <p class="text-sm text-muted-foreground mb-6">
+      Page {page.currentPage} — Showing {page.data.length} of {page.total} posts
+      <a href={getRelativeLocaleUrl(locale, "archives")} class="ml-2 hover:text-accent">&rarr; 按年份归档</a>
+    </p>
+
+    <!-- Post list -->
     <ul>
       {page.data.map(data => <Card {...data} />)}
     </ul>
