@@ -18,79 +18,40 @@ import config from "@/config";
 export async function getStaticPaths() {
   const posts = await getCollection("posts");
   const sortedPosts = getSortedPosts(posts);
-
   return sortedPosts.map((post, index) => ({
     params: { slug: getPostSlug(post.id, post.filePath) },
     props: {
       post,
-      prevPost:
-        index > 0
-          ? {
-              id: sortedPosts[index - 1].id,
-              title: sortedPosts[index - 1].data.title,
-              filePath: sortedPosts[index - 1].filePath,
-            }
-          : null,
-      nextPost:
-        index < sortedPosts.length - 1
-          ? {
-              id: sortedPosts[index + 1].id,
-              title: sortedPosts[index + 1].data.title,
-              filePath: sortedPosts[index + 1].filePath,
-            }
-          : null,
+      prevPost: index > 0
+        ? { id: sortedPosts[index - 1].id, title: sortedPosts[index - 1].data.title, filePath: sortedPosts[index - 1].filePath }
+        : null,
+      nextPost: index < sortedPosts.length - 1
+        ? { id: sortedPosts[index + 1].id, title: sortedPosts[index + 1].data.title, filePath: sortedPosts[index + 1].filePath }
+        : null,
     },
   }));
 }
 
-type AdjacentPost = {
-  id: string;
-  title: string;
-  filePath: string | undefined;
-} | null;
-
-type Props = {
-  post: CollectionEntry<"posts">;
-  prevPost: AdjacentPost;
-  nextPost: AdjacentPost;
-};
+type AdjacentPost = { id: string; title: string; filePath: string | undefined } | null;
+type Props = { post: CollectionEntry<"posts">; prevPost: AdjacentPost; nextPost: AdjacentPost };
 
 const { post, prevPost, nextPost } = Astro.props;
 const locale = Astro.currentLocale ?? config.site.lang;
 
-const {
-  title,
-  description,
-  ogImage: initOgImage,
-  canonicalURL,
-  pubDatetime,
-  modDatetime,
-  timezone,
-  tags,
-  hideEditPost,
-} = post.data;
-
+const { title, description, ogImage: initOgImage, canonicalURL, pubDatetime, modDatetime, timezone, tags, hideEditPost } = post.data;
 const { Content } = await render(post);
 
 let ogImageUrl: string | undefined;
-
 if (typeof initOgImage === "string") {
   ogImageUrl = initOgImage;
 } else if (initOgImage?.src) {
   ogImageUrl = initOgImage.src;
 }
-
 if (!ogImageUrl && config.features.dynamicOgImage) {
-  const postUrl = getPostUrl(post.id, post.filePath, locale).replace(
-    /\/+$/,
-    ""
-  );
+  const postUrl = getPostUrl(post.id, post.filePath, locale).replace(/\/+$/, "");
   ogImageUrl = `${postUrl}/index.png`;
 }
-
-const ogImage = ogImageUrl
-  ? new URL(ogImageUrl, Astro.url.origin).href
-  : undefined;
+const ogImage = ogImageUrl ? new URL(ogImageUrl, Astro.url.origin).href : undefined;
 ---
 
 <PostLayout
@@ -110,66 +71,45 @@ const ogImage = ogImageUrl
     class:list={["app-layout", { "mt-8": !config.features.showBackButton }]}
     data-pagefind-body
   >
-    <h1
-      style={{ viewTransitionName: slugifyStr(title.replaceAll(".", "-")) }}
-      class="text-accent inline-block text-2xl font-bold sm:text-3xl"
-    >
-      {title}
-    </h1>
+    <h1 class="text-2xl font-bold sm:text-3xl">{title}</h1>
 
-    <div class="my-2 flex items-center gap-2">
-      <Datetime {pubDatetime} {modDatetime} {timezone} size="lg" />
-      {
-        post.data.minutesRead && (
-          <>
-            <span aria-hidden="true" class="text-muted-foreground">|</span>
-            <span class="text-sm text-muted-foreground">
-              {post.data.minutesRead} 分钟阅读
-            </span>
-          </>
-        )
-      }
-      <span
-        aria-hidden="true"
-        class:list={[
-          "text-muted-foreground max-sm:hidden",
-          { hidden: !config.features.editPost?.enabled || hideEditPost },
-        ]}
-      >
-        |
-      </span>
-      <EditPost {hideEditPost} {post} class="max-sm:hidden" />
+    <div class="mt-2 mb-6 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
+      <Datetime {pubDatetime} {modDatetime} {timezone} size="sm" />
+      {post.data.minutesRead && (
+        <span>{post.data.minutesRead} 分钟阅读</span>
+      )}
+      <EditPost {hideEditPost} {post} />
     </div>
+
+    <!-- Auto-generated TOC -->
+    <nav id="toc" class="mb-8 rounded-lg border border-border bg-muted/20 px-5 py-4" aria-label="目录">
+      <h2 class="text-sm font-semibold mb-2">Table of contents</h2>
+      <ul id="toc-list" class="text-sm space-y-1"></ul>
+    </nav>
 
     <article
       id="article"
-      class:list={[
-        "mt-8 w-full",
-        "app-prose max-w-app",
-        "prose-pre:bg-(--shiki-light-bg) dark:prose-pre:bg-(--shiki-dark-bg)",
-      ]}
+      class="app-prose max-w-app"
     >
       <Content />
     </article>
 
-    <hr class="my-8 border-dashed" />
-
-    <EditPost class="sm:hidden" {hideEditPost} {post} />
+    <hr class="my-8 border-border" />
 
     <BackToTopButton />
 
-    <ul class="mt-4 mb-8 flex flex-wrap gap-4 sm:my-8">
+    <ul class="mb-6 flex flex-wrap gap-3">
       {tags.map(tag => <Tag tag={slugifyStr(tag)} tagName={tag} size="sm" />)}
     </ul>
 
     <ShareLinks />
 
-    <hr class="my-8 border-dashed" />
+    <hr class="my-8 border-border" />
 
     <AdjacentPostNav {prevPost} {nextPost} />
 
-    <div class="mt-6" id="comments-section">
-      <h2 class="text-xl font-semibold mb-4">评论</h2>
+    <div class="mt-8" id="comments-section">
+      <h2 class="text-lg font-semibold mb-4">评论</h2>
       <div class="giscus"></div>
     </div>
   </main>
@@ -194,102 +134,73 @@ const ogImage = ogImageUrl
 ></script>
 
 <script is:inline data-astro-rerun>
-  function createProgressBar() {
-    const progressContainer = document.createElement("div");
-    progressContainer.className =
-      "progress-container fixed top-0 z-10 h-1 w-full bg-background";
-
-    const progressBar = document.createElement("div");
-    progressBar.className = "progress-bar h-1 w-0 bg-accent";
-    progressBar.id = "myBar";
-
-    progressContainer.appendChild(progressBar);
-    document.body.appendChild(progressContainer);
-  }
-  createProgressBar();
-
-  function updateScrollProgress() {
+  // ---- Reading progress bar ----
+  (function () {
+    const bar = document.createElement("div");
+    bar.className = "fixed top-0 left-0 z-50 h-0.5 bg-accent transition-all";
+    bar.id = "progress-bar";
+    document.body.appendChild(bar);
     document.addEventListener("scroll", () => {
-      const winScroll =
-        document.body.scrollTop || document.documentElement.scrollTop;
-      const height =
-        document.documentElement.scrollHeight -
-        document.documentElement.clientHeight;
-      const scrolled = (winScroll / height) * 100;
-      if (document) {
-        const myBar = document.getElementById("myBar");
-        if (myBar) {
-          myBar.style.width = scrolled + "%";
-        }
-      }
+      const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      bar.style.width = h > 0 ? `${(window.scrollY / h) * 100}%` : "0%";
     });
-  }
-  updateScrollProgress();
+  })();
 
-  function addHeadingLinks() {
-    const headings = Array.from(
-      document.querySelectorAll("h2, h3, h4, h5, h6")
-    );
-    for (const heading of headings) {
-      heading.classList.add("group");
-      const link = document.createElement("a");
-      link.className =
-        "heading-link ms-2 no-underline opacity-75 md:opacity-0 md:group-hover:opacity-100 md:focus:opacity-100";
-      link.href = "#" + heading.id;
+  // ---- TOC generator ----
+  (function () {
+    const toc = document.getElementById("toc");
+    const tocList = document.getElementById("toc-list");
+    if (!toc || !tocList) return;
 
-      const span = document.createElement("span");
-      span.ariaHidden = "true";
-      span.innerText = "#";
-      link.appendChild(span);
-      heading.appendChild(link);
+    const article = document.querySelector("#article");
+    if (!article) return;
+
+    const headings = article.querySelectorAll("h2, h3");
+    if (headings.length === 0) {
+      toc.style.display = "none";
+      return;
     }
-  }
-  addHeadingLinks();
 
-  function attachCopyButtons() {
-    const copyButtonLabel = "Copy";
-    const codeBlocks = Array.from(document.querySelectorAll("pre"));
+    headings.forEach((h, i) => {
+      const id = h.id || `heading-${i}`;
+      h.id = id;
 
-    for (const codeBlock of codeBlocks) {
+      const li = document.createElement("li");
+      li.style.paddingLeft = h.tagName === "H3" ? "1.25rem" : "0";
+
+      const a = document.createElement("a");
+      a.href = `#${id}`;
+      a.textContent = h.textContent || "";
+      a.className = "text-muted-foreground hover:text-accent transition-colors";
+      if (h.tagName === "H3") {
+        a.style.fontSize = "0.8125rem";
+      }
+
+      li.appendChild(a);
+      tocList.appendChild(li);
+    });
+  })();
+
+  // ---- Copy code buttons ----
+  (function () {
+    document.querySelectorAll("pre").forEach(block => {
+      const btn = document.createElement("button");
+      btn.textContent = "Copy";
+      btn.className = "absolute top-2 right-2 text-xs px-2 py-0.5 rounded border border-border bg-background opacity-60 hover:opacity-100 z-10";
+      btn.addEventListener("click", async () => {
+        const code = block.querySelector("code")?.innerText || "";
+        await navigator.clipboard.writeText(code);
+        btn.textContent = "Copied!";
+        setTimeout(() => (btn.textContent = "Copy"), 1000);
+      });
+
       const wrapper = document.createElement("div");
       wrapper.style.position = "relative";
-
-      const computedStyle = getComputedStyle(codeBlock);
-      const hasFileNameOffset =
-        computedStyle.getPropertyValue("--file-name-offset").trim() !== "";
-
-      const topClass = hasFileNameOffset
-        ? "top-(--file-name-offset)"
-        : "-top-3";
-
-      const copyButton = document.createElement("button");
-      copyButton.className = `copy-code absolute end-3 ${topClass} rounded bg-muted border border-muted px-2 py-1 text-xs leading-4 text-foreground font-medium`;
-      copyButton.innerHTML = copyButtonLabel;
-      codeBlock.setAttribute("tabindex", "0");
-      codeBlock.appendChild(copyButton);
-
-      codeBlock?.parentNode?.insertBefore(wrapper, codeBlock);
-      wrapper.appendChild(codeBlock);
-
-      copyButton.addEventListener("click", async () => {
-        await copyCode(codeBlock, copyButton);
-      });
-    }
-
-    async function copyCode(block, button) {
-      const code = block.querySelector("code");
-      const text = code?.innerText;
-
-      await navigator.clipboard.writeText(text ?? "");
-
-      button.innerText = "Copied";
-
-      setTimeout(() => {
-        button.innerText = copyButtonLabel;
-      }, 700);
-    }
-  }
-  attachCopyButtons();
+      block.parentNode?.insertBefore(wrapper, block);
+      wrapper.appendChild(block);
+      wrapper.appendChild(btn);
+    });
+  })();
 
   document.addEventListener("astro:after-swap", () =>
     window.scrollTo({ left: 0, top: 0, behavior: "instant" })

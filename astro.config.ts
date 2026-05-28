@@ -8,8 +8,6 @@ import tailwindcss from "@tailwindcss/vite";
 import mdx from "@astrojs/mdx";
 import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
-import remarkToc from "remark-toc";
-import remarkCollapse from "remark-collapse";
 import remarkMath from "remark-math";
 import remarkDirective from "remark-directive";
 import rehypeKatex from "rehype-katex";
@@ -31,7 +29,7 @@ export default defineConfig({
   integrations: [
     react(),
     mdx({
-      remarkPlugins: [remarkReadingTime, remarkToc, remarkMath, remarkDirective, remarkDirectiveHandler, [remarkCollapse, { test: "Table of contents" }]],
+      remarkPlugins: [remarkReadingTime, remarkMath, remarkDirective, remarkDirectiveHandler],
       rehypePlugins: [
         rehypeSlug,
         [rehypeAutolinkHeadings, { behavior: "append" }],
@@ -52,7 +50,7 @@ export default defineConfig({
     },
   },
   markdown: {
-    remarkPlugins: [remarkReadingTime, remarkToc, remarkMath, remarkDirective, remarkDirectiveHandler, [remarkCollapse, { test: "Table of contents" }]],
+    remarkPlugins: [remarkReadingTime, remarkMath, remarkDirective, remarkDirectiveHandler],
     rehypePlugins: [
       rehypeSlug,
       [rehypeAutolinkHeadings, { behavior: "append" }],
