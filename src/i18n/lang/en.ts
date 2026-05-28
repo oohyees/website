@@ -52,6 +52,9 @@ export default {
 
     searchTitle: "Search",
     searchDesc: "Search any article ...",
+
+    blogTitle: "Blog",
+    blogDesc: "Browse articles by category.",
   },
   a11y: {
     skipToContent: "Skip to content",

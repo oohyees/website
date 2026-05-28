@@ -1,6 +1,7 @@
 ---
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { stripBase, stripLocale } from "@/utils/withBase";
+import { CATEGORIES } from "@/utils/categories";
 import { useTranslations } from "@/i18n";
 import config from "@/config";
 
@@ -27,10 +28,27 @@ const decodeSegment = (value: string) => {
 const navLabels: Record<string, string> = {
   posts: t.nav.posts,
   tags: t.nav.tags,
+  blog: t.nav.posts,
   about: t.nav.about,
   archives: t.nav.archives,
   search: t.nav.search,
 };
+
+function getSegmentLabel(segment: string): string {
+  return navLabels[segment] ?? CATEGORIES[segment]?.label ?? segment;
+}
+
+// if breadcrumb is Home > Blog > [category] > [page]
+if (breadcrumbList[0] === "blog") {
+  const pageNum = Number(breadcrumbList.at(-1));
+  if (!isNaN(pageNum)) breadcrumbList.pop();
+  breadcrumbList[0] = t.nav.posts;
+  // Append page number to the category label on page 2+
+  if (!isNaN(pageNum) && pageNum > 1) {
+    const catIdx = breadcrumbList.length - 1;
+    breadcrumbList[catIdx] = `${getSegmentLabel(breadcrumbList[catIdx])} (${t.pagination.page.toLowerCase()} ${pageNum})`;
+  }
+}
 
 // if breadcrumb is Home > Posts > [page] <etc>
 // replace Posts with localized "Posts (page number)"
@@ -76,7 +94,7 @@ if (breadcrumbList[0] === "tags" && !isNaN(Number(breadcrumbList[2]))) {
               aria-current="page"
             >
               {/* make the last part lowercase in Home > Tags > some-tag */}
-              {navLabels[breadcrumb] ?? decodeSegment(breadcrumb)}
+              {getSegmentLabel(breadcrumb)}
             </span>
           </li>
         ) : (
@@ -85,7 +103,7 @@ if (breadcrumbList[0] === "tags" && !isNaN(Number(breadcrumbList[2]))) {
               href={getRelativeLocaleUrl(locale, breadcrumb)}
               class="capitalize opacity-70"
             >
-              {navLabels[breadcrumb] ?? decodeSegment(breadcrumb)}
+              {getSegmentLabel(breadcrumb)}
             </a>
             <span aria-hidden="true" class="opacity-70">
               &raquo;

@@ -50,6 +50,9 @@ export interface UIStrings {
 
     searchTitle: string;
     searchDesc: string;
+
+    blogTitle: string;
+    blogDesc: string;
   };
   a11y: {
     skipToContent: string;

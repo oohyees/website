@@ -66,10 +66,10 @@ const daysOnline = dayjs().diff(siteBirthday, "day");
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
         {
           [
-            { label: "Research", path: "tags/research", desc: "研究" },
-            { label: "Technical", path: "tags/tech", desc: "技术" },
-            { label: "Daily Life", path: "tags/daily", desc: "日常" },
-            { label: "Journal", path: "tags/journal", desc: "月记" },
+            { label: "Research", path: "blog/research", desc: "学术研究" },
+            { label: "Technical", path: "blog/tech", desc: "技术文章" },
+            { label: "Daily Life", path: "blog/daily", desc: "日常随笔" },
+            { label: "Journal", path: "blog/journal", desc: "月度归档" },
           ].map(cat => (
             <a
               href={getRelativeLocaleUrl(locale, cat.path)}

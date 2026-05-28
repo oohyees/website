@@ -52,6 +52,9 @@ export default {
 
     searchTitle: "搜索",
     searchDesc: "搜索文章...",
+
+    blogTitle: "博客",
+    blogDesc: "按分类浏览文章。",
   },
   a11y: {
     skipToContent: "跳转到内容",
