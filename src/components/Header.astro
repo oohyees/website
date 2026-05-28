@@ -152,6 +152,28 @@ const navItems = [
           </a>
         </li>
 
+        <!-- Travellings -->
+        <li class="col-span-2">
+          <a
+            href="https://travellings.link"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-muted-foreground hover:text-accent"
+          >
+            Travellings &#128645;
+          </a>
+        </li>
+
+        <!-- Language Switch -->
+        <li class="col-span-2">
+          <a
+            href={getRelativeLocaleUrl(locale === "zh" ? "en" : "zh", stripLocale(pathWithoutTrailingSlash, locale))}
+            class="text-sm text-muted-foreground hover:text-accent"
+          >
+            {locale === "zh" ? "English" : "中文"}
+          </a>
+        </li>
+
         <!-- Archives (icon) -->
         {
           features.showArchives && (
