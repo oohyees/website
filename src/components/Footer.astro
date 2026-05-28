@@ -1,6 +1,5 @@
 ---
 import type { HTMLAttributes } from "astro/types";
-import Socials from "./Socials.astro";
 import { useTranslations } from "@/i18n";
 
 type Props = {
@@ -17,14 +16,37 @@ const currentYear = new Date().getFullYear();
   class:list={["app-layout", { "mt-auto": !noMarginTop }, className]}
   {...attrs}
 >
-  <div
-    class="border-border flex flex-col items-center justify-between border-t py-6 sm:flex-row-reverse sm:py-4"
-  >
-    <Socials />
-    <div class="my-2 flex flex-col items-center whitespace-nowrap sm:flex-row">
-      <span>{t.footer.copyright} &#169; {currentYear}</span>
-      <span class="hidden sm:inline">&nbsp;|&nbsp;</span>
-      <span>{t.footer.allRightsReserved}</span>
+  <div class="border-border flex flex-col items-center gap-3 border-t py-6 text-xs text-muted-foreground sm:flex-row sm:justify-between">
+    <div class="flex items-center gap-2 whitespace-nowrap">
+      <span>&#169; {currentYear} {t.footer.copyright}</span>
+      <span>|</span>
+      <a href="/terms" class="hover:text-accent">Site policy</a>
+      <span>|</span>
+      <a
+        href="https://github.com/oohyees/website"
+        target="_blank"
+        class="hover:text-accent"
+      >
+        GitHub
+      </a>
+      <span>|</span>
+      <a
+        href="/rss.xml"
+        class="hover:text-accent"
+      >
+        RSS
+      </a>
+    </div>
+    <div>
+      <span>Powered by Astro</span>
+      <span class="ms-1">|</span>
+      <a
+        href="https://github.com/satnaing/astro-paper"
+        target="_blank"
+        class="ms-1 hover:text-accent"
+      >
+        AstroPaper
+      </a>
     </div>
   </div>
 </footer>

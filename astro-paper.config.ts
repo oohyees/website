@@ -24,7 +24,7 @@ export default defineAstroPaperConfig({
     showBackButton: true,
     editPost: {
       enabled: true,
-      url: "https://github.com/oohyees/astro-paper/edit/main/",
+      url: "https://github.com/oohyees/website/edit/main/",
     },
     search: "pagefind",
   },
