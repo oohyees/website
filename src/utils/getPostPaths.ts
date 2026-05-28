@@ -17,7 +17,8 @@ function getPostPathSegments(filePath: string | undefined): string[] {
 
 function getIdSlug(id: string): string {
   const postId = id.split("/");
-  return postId.length > 0 ? String(postId[postId.length - 1]) : id;
+  const lastSegment = postId.length > 0 ? String(postId[postId.length - 1]) : id;
+  return lastSegment.replace(/\.(md|mdx)$/, "");
 }
 
 function getPostSlugPath(id: string, filePath: string | undefined): string {
@@ -31,10 +32,10 @@ function getPostSlugPath(id: string, filePath: string | undefined): string {
 /**
  * Returns the slug-only path for use as a route param in `getStaticPaths`.
  * No base prefix, no locale — Astro handles those at a higher level.
- * e.g. `/examples/my-post`
+ * e.g. `examples/my-post`
  */
 export function getPostSlug(id: string, filePath: string | undefined): string {
-  return `/${getPostSlugPath(id, filePath)}`;
+  return getPostSlugPath(id, filePath);
 }
 
 /**
