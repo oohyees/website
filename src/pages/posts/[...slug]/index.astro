@@ -82,7 +82,7 @@ const hasToc = tocHeadings.length >= 2;
     <!-- Mobile TOC -->
     {
       hasToc && (
-        <details id="toc-mobile" class="mb-6 lg:hidden post-content">
+        <details id="toc-mobile" class="mb-6 xl:hidden post-content">
           <summary class="text-sm font-semibold cursor-pointer select-none py-1 text-muted-foreground hover:text-foreground">
             Table of contents
           </summary>
@@ -104,15 +104,15 @@ const hasToc = tocHeadings.length >= 2;
       )
     }
 
-    <!-- Two-column: content + sticky TOC -->
-    <div class="flex gap-10">
-      <article id="article" class="app-prose post-content min-w-0 flex-1">
+    <!-- Article wrapper with relative positioning for desktop TOC -->
+    <div class="relative">
+      <article id="article" class="app-prose post-content">
         <Content />
       </article>
 
       {
         hasToc && (
-          <aside class="toc-sidebar hidden lg:block" aria-label="Table of contents">
+          <aside class="toc-sidebar hidden xl:block" aria-label="Table of contents">
             <h2 class="text-sm font-semibold mb-3 text-foreground">Table of contents</h2>
             <nav>
               <ul class="text-sm space-y-1.5 border-l-2 border-border pl-3">
