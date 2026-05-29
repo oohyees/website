@@ -2,7 +2,7 @@ import { defineAstroPaperConfig } from "./src/types/config";
 
 export default defineAstroPaperConfig({
   site: {
-    url: "https://oohyees.vercel.app/",
+    url: "https://oohyees.github.io/",
     title: "Oohyees' Blog",
     description: "一个写代码和生活的博客",
     author: "oohyees",
