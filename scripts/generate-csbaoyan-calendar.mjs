@@ -268,11 +268,6 @@ async function main() {
         continue;
       }
 
-      // Skip past deadlines
-      if (deadline <= now) {
-        continue;
-      }
-
       const eventLines = buildVEVENT(item, sourceKey);
       if (eventLines) {
         for (const line of eventLines) {
